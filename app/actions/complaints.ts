@@ -348,5 +348,12 @@ export async function fetchComplaintById(
     return { success: true, data: found };
   }
 
+  if (!supabase) {
+    return {
+      success: false,
+      error: `No complaint found with ID ${cleanId}. Note: Supabase isn't connected, so complaints are stored only in this server instance's temporary memory and won't be found from a different request/deployment. Set up Supabase env vars to fix this permanently.`
+    };
+  }
+
   return { success: false, error: `No complaint found with ID ${cleanId}. Double check the ID and try again.` };
 }
