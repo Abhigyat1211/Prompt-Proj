@@ -17,6 +17,7 @@ const MOCK_SCENARIOS: {
   keywords: string[];
   english: ReasoningResult;
   hindi: ReasoningResult;
+  hinglish: ReasoningResult;
 }[] = [
   {
     keywords: ["aadhaar", "aadhar", "uidai", "आधार"],
@@ -45,6 +46,19 @@ const MOCK_SCENARIOS: {
         "चरण 4: मोबाइल नंबर या बायोमेट्रिक्स बदलने के लिए आपको नजदीकी आधार सेवा केंद्र पर ही जाना होगा।"
       ],
       disclaimer: "कृपया ध्यान दें कि सभी सुधार यूआईडीएआई के सत्यापन के अधीन हैं। आधिकारिक जानकारी uidai.gov.in पर देखें।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen apne Aadhaar card me address ya name correction/update karwana chahta hai.",
+      serviceMatch: "UIDAI - myAadhaar Portal (ssup.uidai.gov.in)",
+      plainExplanation: "Aadhaar details online myAadhaar portal par ya offline Aadhaar Kendra par valid documents submit karke update kiye ja sakte hain.",
+      actionSteps: [
+        "Step 1: Check karein ki aapka mobile number Aadhaar se link hai ya nahi. Agar link hai to ssup.uidai.gov.in par online update kar sakte hain.",
+        "Step 2: Pata badalne ke liye valid address proof (jaise Voter ID, Passport, ya Bank Statement) ready rakhein.",
+        "Step 3: Portal par OTP se login karein, 'Address Update' select karke scan copy upload karein aur ₹50 fee pay karein.",
+        "Step 4: Mobile number ya biometric change ke liye aapko offline Aadhaar Seva Kendra jana hoga."
+      ],
+      disclaimer: "Aadhaar updates UIDAI officials ke approval ke baad hi verify hote hain. Official details uidai.gov.in par check karein."
     }
   },
   {
@@ -74,6 +88,19 @@ const MOCK_SCENARIOS: {
         "चरण 4: खाद्य सुरक्षा निरीक्षक द्वारा आपके निवास का भौतिक सत्यापन किया जाएगा, जिसके बाद 15-30 दिनों में राशन कार्ड जारी होगा।"
       ],
       disclaimer: "राशन पात्रता श्रेणियां राज्य के नियमों पर निर्भर करती हैं। अपने राज्य के आधिकारिक खाद्य पोर्टल पर जांच करें।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen naya Ration Card banane ya family members ke naam add karne ke baare me puch raha hai.",
+      serviceMatch: "State Food and Civil Supplies Department",
+      plainExplanation: "Ration card state food portals par ya offline Circle office me income status aur Aadhaar documents submit karke banaya jata hai.",
+      actionSteps: [
+        "Step 1: Apne state ke Food & Civil Supplies portal se application form download karein ya offline Ration Office se lein.",
+        "Step 2: Family members ke Aadhaar card copy, head of family ki photo aur Income Certificate collect karein.",
+        "Step 3: Documents ke sath bhara hua form local Circle Office me submit karein aur acknowledgment slip zaroor lein.",
+        "Step 4: Food Inspector ke verification ke baad 15-30 days me aapka Ration card ban jayega."
+      ],
+      disclaimer: "Ration card eligibility state guidelines aur household income par depend karti hai. State PDS portal par verify karein."
     }
   },
   {
@@ -103,6 +130,19 @@ const MOCK_SCENARIOS: {
         "चरण 4: 21 दिनों के बाद पंजीकरण कराने पर हलफनामा (एफिडेविट) और विलंब शुल्क की आवश्यकता होगी।"
       ],
       disclaimer: "देरी से पंजीकरण के लिए मजिस्ट्रेट की अनुमति अनिवार्य है। राज्य के crsorgi.gov.in पोर्टल पर विवरण देखें।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen janam praman patra (Birth Certificate) banane ya register karne ki process puch raha hai.",
+      serviceMatch: "Local Municipal Corporation / Gram Panchayat",
+      plainExplanation: "Birth certificate janam ke 21 din ke andar local Municipal Office ya Gram Panchayat me register karwa kar free me liya ja sakta hai.",
+      actionSteps: [
+        "Step 1: Hospital se child birth slip or discharge summary collect karein.",
+        "Step 2: Janam ke 21 din ke andar municipal corporation office ya Gram Panchayat office visit karein.",
+        "Step 3: Parents ke ID proof (Aadhaar, Voter ID) aur Form 1 bharkae submit karein. 21 days ke andar registration free hai.",
+        "Step 4: Agar 21 din ke baad register karte hain to late fee lagegi aur Magistrate certified affidavit lagega."
+      ],
+      disclaimer: "21 din se jyada delay hone par process thodi complex ho jati hai. crsorgi.gov.in par detail check karein."
     }
   },
   {
@@ -132,6 +172,19 @@ const MOCK_SCENARIOS: {
         "चरण 4: शारीरिक रूप से आवेदन भेजने के लिए जन सूचना अधिकारी (PIO) को संबोधित पत्र के साथ ₹10 का पोस्टल आर्डर भेजें। उत्तर 30 दिन में मिलना अनिवार्य है।"
       ],
       disclaimer: "राष्ट्रीय सुरक्षा से जुड़े संवेदनशील विवरण आरटीआई के तहत नहीं दिए जा सकते। rtionline.gov.in पर दिशा-निर्देश देखें।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen government department se information lene ke liye RTI application file karna chahta hai.",
+      serviceMatch: "RTI Online Portal (rtionline.gov.in)",
+      plainExplanation: "RTI application online portal par ya physically post ke zariye ₹10 fee pay karke file ki ja sakti hai.",
+      actionSteps: [
+        "Step 1: Us government department (Public Authority) ko identify karein jisse aapko information chahiye.",
+        "Step 2: Clear aur specific questions draft karein. Sirf files, data, ya official documents ki maang karein.",
+        "Step 3: rtionline.gov.in par online form fill karein aur ₹10 fee online pay karein (BPL card holders ke liye free hai).",
+        "Step 4: Physical application ke liye Public Information Officer (PIO) ko post se bhejein aur ₹10 ka Postal Order attach karein. Response 30 days me mil jayega."
+      ],
+      disclaimer: "RTI me sensitive details (jaise national security) exempt hoti hain. Official rules rtionline.gov.in par read karein."
     }
   },
   {
@@ -161,6 +214,19 @@ const MOCK_SCENARIOS: {
         "चरण 4: शिकायत क्रमांक सुरक्षित रखें। यदि 15 दिनों में सुनवाई न हो, तो वार्ड पार्षद या कमिश्नर को शिकायत करें।"
       ],
       disclaimer: "सड़कों का स्वामित्व अलग हो सकता है (जैसे एनएचएआई बनाम नगर निगम)। आधिकारिक पोर्टल pgportal.gov.in पर विवरण देखें।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen kharab sadak ya pothole (sadak ke gaddhe) ki complaint register karne ke baare me puch raha hai.",
+      serviceMatch: "Local Municipal Corporation / Central PG Portal (pgportal.gov.in)",
+      plainExplanation: "Kharab sadako ki grievance local Municipal apps par ya central pgportal.gov.in par photos aur location ke sath file ki ja sakti hai.",
+      actionSteps: [
+        "Step 1: Sadak ke gaddhe (pothole) ki clear photo lein jisme landmark bhi dikhe.",
+        "Step 2: Exact location address aur ward number note karein.",
+        "Step 3: Apne Municipal Corporation app/website par complaint file karein ya directly pgportal.gov.in par lodge karein.",
+        "Step 4: Tracking number safe rakhein. Agar 15 din me resolve nahi hota to Ward Commissioner ko escalate karein."
+      ],
+      disclaimer: "Kuch roads NHAI ke under aati hain aur kuch Municipal body ke. Details pgportal.gov.in par verify karein."
     }
   },
   {
@@ -190,6 +256,19 @@ const MOCK_SCENARIOS: {
         "चरण 4: यदि पूरा मोहल्ला गंदे पानी से त्रस्त है, तो वार्ड के सहायक अभियंता को लिखित सामुदायिक शिकायत सौंपें।"
       ],
       disclaimer: "पेयजल गुणवत्ता और आपूर्ति समय की जानकारी के लिए अपने स्थानीय जल विभाग के आधिकारिक पोर्टल पर जाएं।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen paani ki supply me contamination (ganda pani) ya shortage ki problem face kar raha hai.",
+      serviceMatch: "State Jal Board / Public Health Engineering Department (PHED)",
+      plainExplanation: "Water supply complaints consumer ID (CAN number) ke sath local Jal Board me register ki ja sakti hain.",
+      actionSteps: [
+        "Step 1: Apne water bill se Consumer Account Number (CAN / K-No) nikal kar note karein.",
+        "Step 2: Problem type specify karein: Paani bilkul nahi aa raha, pressure low hai, ya ganda paani aa raha hai.",
+        "Step 3: Jal Board ki official helpline call karein ya unke portal/app par complaint register karein.",
+        "Step 4: Agar ganda paani area me sabhi ke ghar aa raha hai to community signatures lekar local office me written complaint submit karein."
+      ],
+      disclaimer: "Water supply limits aur water testing options ke liye local Jal Board office se contact karein."
     }
   },
   {
@@ -219,6 +298,19 @@ const MOCK_SCENARIOS: {
         "चरण 4: भुगतान के 4-5 कार्य दिवसों के बाद, पुनः पोर्टल पर जाकर लिंकिंग सबमिट करें और स्टेटस चेक करें।"
       ],
       disclaimer: "सुनिश्चित करें कि दोनों दस्तावेजों पर आपका नाम और जन्मतिथि समान हो, अन्यथा आवेदन निरस्त हो जाएगा। incometax.gov.in पर देखें।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen apne PAN Card ko Aadhaar Card se link karne ki process janna chahta hai.",
+      serviceMatch: "Income Tax e-Filing Portal (incometax.gov.in)",
+      plainExplanation: "PAN-Aadhaar link karna mandatory hai aur ise Income Tax portal par ₹1000 challan fee pay karke kiya jata hai.",
+      actionSteps: [
+        "Step 1: Income Tax e-filing official website (incometax.gov.in) par visit karein.",
+        "Step 2: 'Link Aadhaar' option par click karein aur apna PAN aur Aadhaar number enter karein.",
+        "Step 3: ₹1000 ka late fee payment e-pay Tax portal ke through Challan ITNS 280 me submit karein.",
+        "Step 4: Payment ke 48-72 hours baad portal par wapas aakar request complete karein aur link status check karein."
+      ],
+      disclaimer: "Donon card me aapka name, DOB aur gender match hona chahiye, warna request fail ho jayegi. details incometax.gov.in par dekhein."
     }
   },
   {
@@ -248,6 +340,19 @@ const MOCK_SCENARIOS: {
         "चरण 4: बैंक खाते को आधार से लिंक होना अनिवार्य है ताकि पेंशन राशि सीधे खाते (DBT) में आ सके।"
       ],
       disclaimer: "विभिन्न राज्यों में पेंशन राशि और पात्रता भिन्न हो सकती है। समाज कल्याण विभाग की आधिकारिक वेबसाइट nsap.nic.in पर जांच करें।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen Old Age, Widow ya Disability Pension scheme ke rules aur application process janna chahta hai.",
+      serviceMatch: "Social Welfare Department / National Social Assistance Programme (NSAP)",
+      plainExplanation: "Pension welfare schemes e-District portals par age, bank passbook aur income details submit karke apply ki jati hain.",
+      actionSteps: [
+        "Step 1: Check karein ki criteria meet ho raha hai (jaise Old Age pension ke liye minimum 60 years age).",
+        "Step 2: Gather karein: Aadhaar card, Age proof, Bank Passbook, aur valid Income Certificate.",
+        "Step 3: State e-District portal par apply karein ya Block/Tehsil office me physical form submit karein.",
+        "Step 4: DBT direct bank transfer ke liye bank account Aadhaar se link hona compulsory hai."
+      ],
+      disclaimer: "Pension state level policies par depend karti hai. Detailed eligibility rules nsap.nic.in par dekhein."
     }
   }
 ];
@@ -256,14 +361,38 @@ const MOCK_SCENARIOS: {
 function runMockAnalysis(query: string, langHint: "hi" | "en" = "en"): ReasoningResult {
   const lowercaseQuery = query.toLowerCase();
   
+  // Hinglish detection logic: Check for common Hindi words written in English letters (code-mixed Roman script)
+  const HINGLISH_KEYWORDS = [
+    "kaise", "kya", "kare", "karna", "krna", "hai", "banaen", "banae", "banaye",
+    "badle", "badalna", "shikayat", "mera", "mujhe", "apna", "shuru", "link",
+    "nhi", "nahi", "ko", "se", "karana", "karne", "karke", "hoga", "chahiye",
+    "karna h", "kaise kare", "kaise karein", "kaise banaye"
+  ];
+  
+  const isDevanagari = /[\u0900-\u097F]/.test(query);
+  const containsHinglishWords = HINGLISH_KEYWORDS.some(word => {
+    // Exact word matching to avoid false positives (e.g. matching "ko" in "korea")
+    const regex = new RegExp(`\\b${word}\\b`, 'i');
+    return regex.test(lowercaseQuery);
+  });
+  
+  const isHinglish = !isDevanagari && containsHinglishWords;
+
   // Find matching mock scenario
   const matched = MOCK_SCENARIOS.find(s => 
     s.keywords.some(keyword => lowercaseQuery.includes(keyword))
   );
 
   if (matched) {
-    // If query has Hindi script or explicitly requested, or if matched keyword was Hindi
-    const isHindi = /[\u0900-\u097F]/.test(query) || matched.keywords.some(k => /[\u0900-\u097F]/.test(k) && lowercaseQuery.includes(k)) || langHint === "hi";
+    if (isHinglish) {
+      return {
+        ...matched.hinglish,
+        isMocked: true
+      };
+    }
+    
+    // If query has Hindi script or explicitly requested
+    const isHindi = isDevanagari || matched.keywords.some(k => /[\u0900-\u097F]/.test(k) && lowercaseQuery.includes(k)) || langHint === "hi";
     return {
       ...(isHindi ? matched.hindi : matched.english),
       isMocked: true
@@ -271,7 +400,23 @@ function runMockAnalysis(query: string, langHint: "hi" | "en" = "en"): Reasoning
   }
 
   // Fallback default response if no keyword matched
-  const isHindiInput = /[\u0900-\u097F]/.test(query) || langHint === "hi";
+  if (isHinglish) {
+    return {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: `Citizen ne Hinglish me query pucha hai: "${query.substring(0, 50)}..."`,
+      serviceMatch: "District Grievance & Service Portal (e-District)",
+      plainExplanation: "Kisi bhi civic service ke liye aapko relevant department aur basic documents (Aadhaar, income/residence certificate) ki zaroorat padegi.",
+      actionSteps: [
+        "Step 1: Apne scheme ke documents (Aadhaar, Voter ID, Photo, etc.) collect karein.",
+        "Step 2: Apne state ke official e-District online portal par register karein.",
+        "Step 3: Kisi prashasanik shikayat ke liye Central PG Portal (pgportal.gov.in) par grievance register karein."
+      ],
+      disclaimer: "Ye general information hai. Sahi details janne ke liye official govt portals check karein.",
+      isMocked: true
+    };
+  }
+
+  const isHindiInput = isDevanagari || langHint === "hi";
   if (isHindiInput) {
     return {
       detectedLanguage: "Hindi (हिंदी)",
