@@ -40,6 +40,55 @@ const LOADING_STEPS = [
   "Formatting glass-box reasoning audit trail..."
 ];
 
+// Site-wide UI text so the language toggle affects navigation, forms, and headers
+// everywhere, not just the Ask Companion AI response area.
+type UILang = "en" | "hi" | "hinglish";
+const UI_TEXT: Record<string, Record<UILang, string>> = {
+  navCompanion: { en: "Ask Companion", hi: "साथी से पूछें", hinglish: "Companion se Pucho" },
+  navReport: { en: "Report Grievance", hi: "शिकायत दर्ज करें", hinglish: "Shikayat Darj Karein" },
+  navTrack: { en: "Track Status", hi: "स्थिति देखें", hinglish: "Status Track Karein" },
+  reportTitle: { en: "Report a Civic Issue", hi: "नागरिक समस्या दर्ज करें", hinglish: "Civic Issue Report Karein" },
+  reportSubtitle: {
+    en: "Describe any local issues (like potholes, garbage piles, or water contamination) in natural language.",
+    hi: "अपनी भाषा में स्थानीय समस्याएं (जैसे गड्ढे, कचरा, या दूषित पानी) बताएं।",
+    hinglish: "Apni bhasha me local issues (jaise gaddhe, kachra, ya dirty paani) describe karein."
+  },
+  issueDescLabel: { en: "Issue Description", hi: "समस्या का विवरण", hinglish: "Issue Description" },
+  issueDescPlaceholder: {
+    en: "Explain the problem in detail (e.g. 'There is a huge pothole near the post office causing traffic issues...')",
+    hi: "समस्या का विस्तार से वर्णन करें (जैसे 'पोस्ट ऑफिस के पास एक बड़ा गड्ढा है जिससे ट्रैफिक जाम हो रहा है...')",
+    hinglish: "Problem ko detail me batayein (jaise 'Post office ke paas ek bada gaddha hai jisse traffic jam ho raha hai...')"
+  },
+  locationLabel: { en: "Location / Ward (Optional)", hi: "स्थान / वार्ड (वैकल्पिक)", hinglish: "Location / Ward (Optional)" },
+  locationPlaceholder: {
+    en: "e.g. Sector 62, Noida, near Metro Station",
+    hi: "जैसे सेक्टर 62, नोएडा, मेट्रो स्टेशन के पास",
+    hinglish: "jaise Sector 62, Noida, Metro Station ke paas"
+  },
+  submitGrievance: { en: "Submit Grievance", hi: "शिकायत जमा करें", hinglish: "Grievance Submit Karein" },
+  runningExtraction: { en: "Running Glass-Box AI Extraction...", hi: "एआई विश्लेषण चल रहा है...", hinglish: "AI Extraction Chal Raha Hai..." },
+  grievanceFiledTitle: { en: "Grievance Filed Successfully!", hi: "शिकायत सफलतापूर्वक दर्ज हुई!", hinglish: "Grievance Successfully File Ho Gayi!" },
+  grievanceFiledSubtitle: {
+    en: "Your complaint has been processed and saved. Use the tracking ID below to check resolution status.",
+    hi: "आपकी शिकायत दर्ज कर ली गई है। नीचे दी गई ट्रैकिंग आईडी से स्थिति जांचें।",
+    hinglish: "Aapki complaint save ho gayi hai. Neeche di gayi tracking ID se status check karein."
+  },
+  copyId: { en: "Copy ID", hi: "आईडी कॉपी करें", hinglish: "ID Copy Karein" },
+  trackTitle: { en: "Track Complaint Status", hi: "शिकायत की स्थिति देखें", hinglish: "Complaint Status Track Karein" },
+  trackSubtitlePrefix: {
+    en: "Enter the tracking ID of your complaint to check updates. (Try seeded IDs like",
+    hi: "अपनी शिकायत की ट्रैकिंग आईडी दर्ज करें। (परीक्षण के लिए इन आईडी का प्रयोग करें",
+    hinglish: "Apni complaint ki tracking ID daalein status check karne ke liye. (Test ke liye ye IDs try karein"
+  },
+  trackSubtitleSuffix: { en: "for testing).", hi: ")", hinglish: ")" },
+  trackPlaceholder: { en: "Enter Tracking ID (e.g., NM-2026-0001)", hi: "ट्रैकिंग आईडी दर्ज करें (जैसे NM-2026-0001)", hinglish: "Tracking ID daalein (jaise NM-2026-0001)" },
+  searchButton: { en: "Search", hi: "खोजें", hinglish: "Search Karein" },
+};
+
+function tr(key: keyof typeof UI_TEXT, lang: UILang): string {
+  return UI_TEXT[key][lang] ?? UI_TEXT[key].en;
+}
+
 export default function Home() {
   // Navigation Tabs: companion, report, track
   const [activeTab, setActiveTab] = useState<"companion" | "report" | "track">("companion");
@@ -255,7 +304,7 @@ export default function Home() {
               }`}
             >
               <Sparkles className="h-4 w-4" />
-              <span>Ask Companion</span>
+              <span>{tr("navCompanion", langPreference)}</span>
             </button>
             <button
               onClick={() => setActiveTab("report")}
@@ -266,7 +315,7 @@ export default function Home() {
               }`}
             >
               <AlertTriangle className="h-4 w-4" />
-              <span>Report Grievance</span>
+              <span>{tr("navReport", langPreference)}</span>
             </button>
             <button
               onClick={() => setActiveTab("track")}
@@ -277,7 +326,7 @@ export default function Home() {
               }`}
             >
               <Activity className="h-4 w-4" />
-              <span>Track Status</span>
+              <span>{tr("navTrack", langPreference)}</span>
             </button>
           </div>
 
@@ -467,24 +516,24 @@ export default function Home() {
                 <div>
                   <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
                     <AlertTriangle className="text-orange-500 h-5 w-5" />
-                    <span>Report a Civic Issue</span>
+                    <span>{tr("reportTitle", langPreference)}</span>
                   </h3>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                    Describe any local issues (like potholes, garbage piles, or water contamination) in natural language.
+                    {tr("reportSubtitle", langPreference)}
                   </p>
                 </div>
 
                 <form onSubmit={handleReportSubmit} className="space-y-4">
                   <div>
                     <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide mb-1.5">
-                      Issue Description
+                      {tr("issueDescLabel", langPreference)}
                     </label>
                     <textarea
                       required
                       rows={4}
                       value={complaintDesc}
                       onChange={(e) => setComplaintDesc(e.target.value)}
-                      placeholder="Explain the problem in detail (e.g. 'There is a huge pothole near the post office causing traffic issues...')"
+                      placeholder={tr("issueDescPlaceholder", langPreference)}
                       className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 dark:text-zinc-50 text-zinc-900 placeholder-zinc-400"
                     />
                   </div>
@@ -492,13 +541,13 @@ export default function Home() {
                   <div>
                     <label className="block text-xs font-bold text-zinc-700 dark:text-zinc-300 uppercase tracking-wide mb-1.5 flex items-center gap-1">
                       <MapPin className="h-3.5 w-3.5 text-zinc-400" />
-                      <span>Location / Ward (Optional)</span>
+                      <span>{tr("locationLabel", langPreference)}</span>
                     </label>
                     <input
                       type="text"
                       value={complaintLoc}
                       onChange={(e) => setComplaintLoc(e.target.value)}
-                      placeholder="e.g. Sector 62, Noida, near Metro Station"
+                      placeholder={tr("locationPlaceholder", langPreference)}
                       className="w-full bg-zinc-50 dark:bg-zinc-950 border border-zinc-200 dark:border-zinc-800 rounded-xl p-3.5 text-sm focus:outline-none focus:ring-1 focus:ring-orange-500 dark:text-zinc-50 text-zinc-900 placeholder-zinc-400"
                     />
                   </div>
@@ -511,11 +560,11 @@ export default function Home() {
                     {isReporting ? (
                       <>
                         <Loader2 className="h-4 w-4 animate-spin" />
-                        <span>Running Glass-Box AI Extraction...</span>
+                        <span>{tr("runningExtraction", langPreference)}</span>
                       </>
                     ) : (
                       <>
-                        <span>Submit Grievance</span>
+                        <span>{tr("submitGrievance", langPreference)}</span>
                         <ChevronRight className="h-4 w-4" />
                       </>
                     )}
@@ -545,6 +594,14 @@ export default function Home() {
                       animate={{ opacity: 1, scale: 1 }}
                       className="space-y-4"
                     >
+                      {reportResult.data.isMocked && (
+                        <div className="p-3 bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/40 rounded-xl flex items-start gap-2.5 text-amber-800 dark:text-amber-300">
+                          <AlertTriangle className="h-4 w-4 shrink-0 mt-0.5" />
+                          <span className="text-xs leading-relaxed">
+                            <strong>Sandbox mode:</strong> this complaint was saved to temporary memory, not the real database — Supabase isn&apos;t connected (missing or invalid <code>NEXT_PUBLIC_SUPABASE_URL</code> / <code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code>, or the <code>complaints</code> table/policies aren&apos;t set up). It may show &quot;not found&quot; when tracked later, especially from a different request. Set up Supabase to persist real tracking IDs.
+                          </span>
+                        </div>
+                      )}
                       <div className="relative p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 rounded-2xl flex items-start gap-3 overflow-hidden">
                         <Confetti active={showConfetti} />
                         <motion.div
@@ -556,7 +613,7 @@ export default function Home() {
                         </motion.div>
                         <div className="flex-1">
                           <h4 className="font-extrabold text-sm text-emerald-900 dark:text-emerald-400 flex items-center gap-1.5">
-                            Grievance Filed Successfully!
+                            {tr("grievanceFiledTitle", langPreference)}
                             <motion.span
                               initial={{ opacity: 0, x: -10 }}
                               animate={{ opacity: 1, x: 0 }}
@@ -566,7 +623,7 @@ export default function Home() {
                             </motion.span>
                           </h4>
                           <p className="text-xs text-emerald-700 dark:text-emerald-300 mt-0.5">
-                            Your complaint has been processed and saved. Use the tracking ID below to check resolution status.
+                            {tr("grievanceFiledSubtitle", langPreference)}
                           </p>
 
                           <div className="mt-3 flex flex-col sm:flex-row items-stretch sm:items-center gap-2 bg-white dark:bg-zinc-900 p-2.5 rounded-xl border border-emerald-200/50 dark:border-emerald-900/50 shadow-sm max-w-sm">
@@ -577,7 +634,7 @@ export default function Home() {
                               onClick={() => copyToClipboard(reportResult.data.tracking_id)}
                               className="bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-700 dark:text-zinc-300 text-xs font-bold px-3 py-1.5 rounded-lg border border-zinc-200 dark:border-zinc-700 shrink-0"
                             >
-                              Copy ID
+                              {tr("copyId", langPreference)}
                             </button>
                           </div>
                         </div>
@@ -647,10 +704,10 @@ export default function Home() {
                 <div>
                   <h3 className="text-xl font-extrabold text-zinc-900 dark:text-white flex items-center gap-2">
                     <Activity className="text-blue-600 h-5 w-5" />
-                    <span>Track Complaint Status</span>
+                    <span>{tr("trackTitle", langPreference)}</span>
                   </h3>
                   <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-                    Enter the tracking ID of your complaint to check updates. (Try seeded IDs like <strong>NM-2026-0001</strong> or <strong>NM-2026-0002</strong> for testing).
+                    {tr("trackSubtitlePrefix", langPreference)} <strong>NM-2026-0001</strong> {langPreference === "en" ? "or" : langPreference === "hi" ? "या" : "ya"} <strong>NM-2026-0002</strong> {tr("trackSubtitleSuffix", langPreference)}
                   </p>
                 </div>
 
@@ -662,7 +719,7 @@ export default function Home() {
                       required
                       value={trackId}
                       onChange={(e) => setTrackId(e.target.value)}
-                      placeholder="Enter Tracking ID (e.g., NM-2026-0001)"
+                      placeholder={tr("trackPlaceholder", langPreference)}
                       className="w-full bg-transparent border-none focus:outline-none focus:ring-0 text-sm text-zinc-900 dark:text-zinc-100 font-mono"
                     />
                   </div>
@@ -671,7 +728,7 @@ export default function Home() {
                     disabled={isTrackPending || !trackId.trim()}
                     className="bg-slate-900 hover:bg-slate-850 text-white font-bold text-sm px-6 py-3 rounded-xl transition-all shadow-md flex items-center justify-center border border-slate-800 shrink-0"
                   >
-                    {isTrackPending ? <Loader2 className="h-4 w-4 animate-spin" /> : "Search"}
+                    {isTrackPending ? <Loader2 className="h-4 w-4 animate-spin" /> : tr("searchButton", langPreference)}
                   </button>
                 </form>
 
@@ -788,10 +845,10 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* Right Side: Transparency Prompt Panel + Document Reckoner */}
+        {/* Right Side: Document Reckoner + Transparency Prompt Panel */}
         <div className="w-full lg:w-80 shrink-0 flex flex-col gap-4">
-          <PromptPanel />
-          <DocumentReckoner />
+          <DocumentReckoner lang={langPreference} />
+          <PromptPanel lang={langPreference} />
         </div>
 
       </main>
