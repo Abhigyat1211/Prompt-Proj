@@ -4,7 +4,20 @@ import { useState } from "react";
 import { SYSTEM_PROMPT } from "../app/config/systemPrompt";
 import { Terminal, ShieldAlert, Cpu, Database, FileCode2 } from "lucide-react";
 
-export default function PromptPanel() {
+type Lang = "en" | "hi" | "hinglish";
+
+const PANEL_TEXT: Record<string, Record<Lang, string>> = {
+  title: { en: "How Nagrik Mitra Thinks", hi: "नागरिक मित्र कैसे सोचता है", hinglish: "Nagrik Mitra Kaise Sochta Hai" },
+  subtitle: {
+    en: "Explore the exact system instructions and grounding principles that govern the AI companion.",
+    hi: "एआई साथी को नियंत्रित करने वाले सटीक सिस्टम निर्देश और सिद्धांत देखें।",
+    hinglish: "AI companion ko control karne wale exact system instructions aur principles dekhein."
+  },
+  architectureTab: { en: "Prompt Architecture", hi: "प्रॉम्प्ट संरचना", hinglish: "Prompt Architecture" },
+  rawTab: { en: "View System Prompt", hi: "सिस्टम प्रॉम्प्ट देखें", hinglish: "System Prompt Dekhein" },
+};
+
+export default function PromptPanel({ lang = "en" }: { lang?: Lang }) {
   const [activeTab, setActiveTab] = useState<"structure" | "raw">("structure");
 
   const promptSections = [
@@ -36,10 +49,10 @@ export default function PromptPanel() {
       <div className="p-5 border-b border-zinc-200 dark:border-zinc-800 bg-zinc-50/50 dark:bg-zinc-900/50">
         <h3 className="font-bold text-zinc-900 dark:text-zinc-50 flex items-center gap-2">
           <Terminal className="h-5 w-5 text-indigo-600" />
-          <span>How Nagrik Mitra Thinks</span>
+          <span>{PANEL_TEXT.title[lang]}</span>
         </h3>
         <p className="text-xs text-zinc-500 dark:text-zinc-400 mt-1">
-          Explore the exact system instructions and grounding principles that govern the AI companion.
+          {PANEL_TEXT.subtitle[lang]}
         </p>
       </div>
 
@@ -53,7 +66,7 @@ export default function PromptPanel() {
               : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
           }`}
         >
-          Prompt Architecture
+          {PANEL_TEXT.architectureTab[lang]}
         </button>
         <button
           onClick={() => setActiveTab("raw")}
@@ -63,7 +76,7 @@ export default function PromptPanel() {
               : "border-transparent text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
           }`}
         >
-          View System Prompt
+          {PANEL_TEXT.rawTab[lang]}
         </button>
       </div>
 
@@ -91,7 +104,7 @@ export default function PromptPanel() {
             <div className="p-3 bg-indigo-50/50 dark:bg-indigo-950/10 border border-indigo-100/50 dark:border-indigo-900/20 rounded-xl">
               <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-600 dark:text-indigo-400">Grounded Scenarios</span>
               <p className="text-[11px] text-zinc-600 dark:text-zinc-400 leading-normal mt-1">
-                Aadhaar Update • Ration Card application • Birth Certificate registration • RTI Filing • Pothole Grievances • Municipal Water issues • Social Pensions • PAN-Aadhaar links • Caste Certificates • Income verification.
+New Aadhaar Enrollment (incl. children) • Aadhaar Correction • Ration Card application • Birth Certificate registration • RTI Filing • Pothole Grievances • Municipal Water issues • Social Pensions • PAN-Aadhaar links • Caste Certificates • Income verification.
               </p>
             </div>
           </div>
