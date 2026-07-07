@@ -5,7 +5,6 @@ import { motion, AnimatePresence } from "framer-motion";
 import { 
   Search, 
   Globe, 
-  HelpCircle, 
   CheckCircle, 
   BookOpen, 
   AlertTriangle,
@@ -13,18 +12,17 @@ import {
   Sparkles,
   ChevronRight,
   Flame,
-  MessageSquare,
-  FileText,
   MapPin,
-  ClipboardList,
   Activity,
-  ArrowRight,
-  Info
+  Info,
+  Star
 } from "lucide-react";
 import { queryNagrikMitra, ReasoningResult } from "./actions/chat";
 import { createComplaint, fetchComplaintById, ComplaintData, ExtractionResult } from "./actions/complaints";
 import ReasoningStepper from "../components/ReasoningStepper";
 import PromptPanel from "../components/PromptPanel";
+import Confetti from "../components/Confetti";
+import DocumentReckoner from "../components/DocumentReckoner";
 
 const SUGGESTED_QUERIES = [
   { text: "How to correct address in Aadhaar card?", label: "Aadhaar", lang: "en" },
@@ -67,6 +65,9 @@ export default function Home() {
   const [isTrackPending, startTrackTransition] = useTransition();
   const [trackResult, setTrackResult] = useState<ComplaintData | null>(null);
   const [trackError, setTrackError] = useState<string | null>(null);
+
+  // Confetti reward state
+  const [showConfetti, setShowConfetti] = useState(false);
 
   // Interval for loading micro-copy
   const startLoadingAnimation = (stepsList: string[], setter: React.Dispatch<React.SetStateAction<number>>) => {
@@ -134,6 +135,9 @@ export default function Home() {
           setReportResult({ data: response.data, stepInfo: response.stepInfo });
           setComplaintDesc("");
           setComplaintLoc("");
+          // 🎉 Trigger confetti reward
+          setShowConfetti(true);
+          setTimeout(() => setShowConfetti(false), 4000);
         } else {
           setReportError(response.error || "Complaint submission failed.");
         }
@@ -174,13 +178,13 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans flex flex-col">
+    <div className="min-h-screen bg-zinc-50 dark:bg-zinc-950 font-sans flex flex-col" id="nagrik-mitra-app">
       {/* Header Banner representing India national colors elegantly */}
       <div className="h-1.5 w-full bg-gradient-to-r from-orange-500 via-white to-emerald-600" />
 
       {/* Main Navigation */}
       <header className="border-b border-zinc-200 dark:border-zinc-800 bg-white/85 dark:bg-zinc-900/80 backdrop-blur-md sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2">
           <div className="flex items-center gap-3">
             <div className="h-9 w-9 bg-gradient-to-br from-orange-500 via-orange-400 to-blue-900 rounded-lg flex items-center justify-center text-white font-bold text-lg shadow-sm border border-orange-300">
               NM
@@ -192,39 +196,42 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex items-center gap-4">
-            {/* Language Selection Toggle */}
+          <div className="flex items-center gap-2 shrink-0">
+            {/* Language Selection Toggle - mobile compact */}
             <div className="flex bg-zinc-100 dark:bg-zinc-800 p-1 rounded-lg border border-zinc-200/50 dark:border-zinc-700">
               <button
                 onClick={() => setLangPreference("en")}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all flex items-center gap-1.5 ${
+                className={`px-2 sm:px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold transition-all flex items-center gap-1 ${
                   langPreference === "en"
                     ? "bg-white dark:bg-zinc-900 text-zinc-800 dark:text-zinc-50 shadow-sm"
                     : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
                 }`}
               >
-                <Globe className="h-3 w-3" />
-                English
+                <Globe className="h-3 w-3 shrink-0" />
+                <span className="hidden sm:inline">English</span>
+                <span className="sm:hidden">EN</span>
               </button>
               <button
                 onClick={() => setLangPreference("hi")}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                className={`px-2 sm:px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold transition-all ${
                   langPreference === "hi"
                     ? "bg-white dark:bg-zinc-900 text-orange-600 dark:text-orange-400 shadow-sm"
                     : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
                 }`}
               >
-                हिन्दी (Hindi)
+                <span className="hidden sm:inline">हिन्दी (Hindi)</span>
+                <span className="sm:hidden">हि</span>
               </button>
               <button
                 onClick={() => setLangPreference("hinglish")}
-                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                className={`px-2 sm:px-3 py-1.5 rounded-md text-[10px] sm:text-xs font-bold transition-all ${
                   langPreference === "hinglish"
                     ? "bg-white dark:bg-zinc-900 text-blue-600 dark:text-blue-400 shadow-sm"
                     : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
                 }`}
               >
-                Hinglish (हिंग्लिश)
+                <span className="hidden sm:inline">Hinglish</span>
+                <span className="sm:hidden">Hi-En</span>
               </button>
             </div>
           </div>
@@ -538,10 +545,26 @@ export default function Home() {
                       animate={{ opacity: 1, scale: 1 }}
                       className="space-y-4"
                     >
-                      <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 rounded-2xl flex items-start gap-3">
-                        <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                      <div className="relative p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/40 rounded-2xl flex items-start gap-3 overflow-hidden">
+                        <Confetti active={showConfetti} />
+                        <motion.div
+                          initial={{ scale: 0, rotate: -180 }}
+                          animate={{ scale: 1, rotate: 0 }}
+                          transition={{ type: "spring", stiffness: 200, damping: 12 }}
+                        >
+                          <CheckCircle className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
+                        </motion.div>
                         <div className="flex-1">
-                          <h4 className="font-extrabold text-sm text-emerald-900 dark:text-emerald-400">Grievance Filed Successfully!</h4>
+                          <h4 className="font-extrabold text-sm text-emerald-900 dark:text-emerald-400 flex items-center gap-1.5">
+                            Grievance Filed Successfully!
+                            <motion.span
+                              initial={{ opacity: 0, x: -10 }}
+                              animate={{ opacity: 1, x: 0 }}
+                              transition={{ delay: 0.3 }}
+                            >
+                              <Star className="h-3.5 w-3.5 text-yellow-500 fill-yellow-400" />
+                            </motion.span>
+                          </h4>
                           <p className="text-xs text-emerald-700 dark:text-emerald-300 mt-0.5">
                             Your complaint has been processed and saved. Use the tracking ID below to check resolution status.
                           </p>
@@ -765,9 +788,10 @@ export default function Home() {
           </AnimatePresence>
         </div>
 
-        {/* Right Side: Transparency Prompt Panel */}
-        <div className="w-full lg:w-80 shrink-0">
+        {/* Right Side: Transparency Prompt Panel + Document Reckoner */}
+        <div className="w-full lg:w-80 shrink-0 flex flex-col gap-4">
           <PromptPanel />
+          <DocumentReckoner />
         </div>
 
       </main>
