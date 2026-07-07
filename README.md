@@ -1,36 +1,110 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nagrik Mitra
+
+A civic complaint tracking platform that lets citizens submit local issues (category, location, urgency, description) and follow their progress with a unique tracking ID.
+
+**Live demo:** [prompt-proj-xwyh-1b8exrfo2-abhigyat1211s-projects.vercel.app](https://prompt-proj-xwyh-1b8exrfo2-abhigyat1211s-projects.vercel.app/)
+
+## Features
+
+- 📝 Submit complaints with category, location, urgency level, and description
+- 🔎 Track complaint status using a generated tracking ID
+- ⚡ Real-time backend powered by Supabase (Postgres)
+- 🎨 Smooth UI animations via Framer Motion
+- 📱 Responsive, modern interface styled with Tailwind CSS
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | [Next.js 16](https://nextjs.org) (App Router) |
+| Language | TypeScript |
+| UI | React 19, Tailwind CSS 4, Framer Motion, Lucide Icons |
+| Backend / DB | [Supabase](https://supabase.com) (Postgres + Row Level Security) |
+| Hosting | Vercel |
+
+## Project Structure
+
+```
+.
+├── app/            # Next.js App Router pages & routes
+├── components/     # Reusable UI components
+├── lib/            # Supabase client & shared utilities
+├── public/         # Static assets
+├── next.config.ts
+├── tsconfig.json
+└── package.json
+```
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone and install
+
+```bash
+git clone https://github.com/Abhigyat1211/Prompt-Proj.git
+cd Prompt-Proj
+npm install
+```
+
+### 2. Set up environment variables
+
+Create a `.env.local` file in the project root:
+
+```bash
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+```
+
+You can find these in your Supabase project under **Settings → API**.
+
+### 3. Set up the database
+
+Run the following in the Supabase SQL editor to create the `complaints` table with the required Row Level Security policies:
+
+```sql
+create table complaints (
+  id uuid primary key default gen_random_uuid(),
+  tracking_id text unique not null,
+  category text,
+  location text,
+  urgency text,
+  status text default 'Submitted',
+  description text,
+  created_at timestamptz default now()
+);
+
+alter table complaints enable row level security;
+
+create policy "Allow anon insert" on complaints
+  for insert to anon with check (true);
+
+create policy "Allow anon select" on complaints
+  for select to anon using (true);
+```
+
+### 4. Run the dev server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+This project is deployed on [Vercel](https://vercel.com). To deploy your own instance:
 
-## Learn More
+1. Push this repo to your GitHub account
+2. Import it into Vercel
+3. Add the `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` environment variables under **Project Settings → Environment Variables**
+4. Deploy — Vercel will build and host it automatically
 
-To learn more about Next.js, take a look at the following resources:
+## Roadmap / Ideas
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- [ ] Admin dashboard for managing complaint statuses
+- [ ] Email/SMS notifications on status updates
+- [ ] Map view of complaint locations
+- [ ] Authentication for municipal staff
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## License
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Add a license of your choice (e.g. MIT) if you plan to open-source this.
