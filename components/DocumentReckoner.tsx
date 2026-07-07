@@ -100,7 +100,17 @@ const SERVICES: Service[] = [
   },
 ];
 
-export default function DocumentReckoner() {
+type Lang = "en" | "hi" | "hinglish";
+const RECKONER_TEXT: Record<string, Record<Lang, string>> = {
+  title: { en: "Document Ready-Reckoner", hi: "दस्तावेज़ रेडी-रेकनर", hinglish: "Document Ready-Reckoner" },
+  subtitle: {
+    en: "Check what you need before you go",
+    hi: "जाने से पहले जांच लें कि आपको क्या चाहिए",
+    hinglish: "Jaane se pehle check karein kya chahiye"
+  },
+};
+
+export default function DocumentReckoner({ lang = "en" }: { lang?: Lang }) {
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const [checked, setChecked] = useState<Record<string, boolean>>({});
   const [isExpanded, setIsExpanded] = useState(true);
@@ -133,10 +143,10 @@ export default function DocumentReckoner() {
           </div>
           <div className="text-left">
             <p className="text-xs font-extrabold text-zinc-900 dark:text-zinc-50">
-              Document Ready-Reckoner
+              {RECKONER_TEXT.title[lang]}
             </p>
             <p className="text-[10px] text-zinc-400">
-              Check what you need before you go
+              {RECKONER_TEXT.subtitle[lang]}
             </p>
           </div>
         </div>
