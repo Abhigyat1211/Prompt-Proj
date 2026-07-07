@@ -23,8 +23,8 @@ const SUGGESTED_QUERIES = [
   { text: "How to correct address in Aadhaar card?", label: "Aadhaar", lang: "en" },
   { text: "राशन कार्ड के लिए आवेदन कैसे करें?", label: "Ration Card", lang: "hi" },
   { text: "How to link PAN card with Aadhaar?", label: "PAN Link", lang: "en" },
-  { text: "RTI कैसे फाइल करते हैं?", label: "RTI", lang: "hi" },
-  { text: "Report a pothole in my area", label: "Road Issue", lang: "en" }
+  { text: "RTI kaise file karein?", label: "RTI (Hinglish)", lang: "hinglish" },
+  { text: "Road par gaddhe ki complaint kaise karein?", label: "Road (Hinglish)", lang: "hinglish" }
 ];
 
 const LOADING_STEPS = [
@@ -37,7 +37,7 @@ const LOADING_STEPS = [
 
 export default function Home() {
   const [query, setQuery] = useState("");
-  const [langPreference, setLangPreference] = useState<"en" | "hi">("en");
+  const [langPreference, setLangPreference] = useState<"en" | "hi" | "hinglish">("en");
   const [result, setResult] = useState<ReasoningResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -82,7 +82,7 @@ export default function Home() {
 
   const selectSuggested = (text: string, lang: string) => {
     setQuery(text);
-    setLangPreference(lang as "en" | "hi");
+    setLangPreference(lang as "en" | "hi" | "hinglish");
   };
 
   return (
@@ -128,6 +128,16 @@ export default function Home() {
               >
                 हिन्दी (Hindi)
               </button>
+              <button
+                onClick={() => setLangPreference("hinglish")}
+                className={`px-3 py-1.5 rounded-md text-xs font-bold transition-all ${
+                  langPreference === "hinglish"
+                    ? "bg-white dark:bg-zinc-900 text-blue-600 dark:text-blue-400 shadow-sm"
+                    : "text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300"
+                }`}
+              >
+                Hinglish (हिंग्लिश)
+              </button>
             </div>
           </div>
         </div>
@@ -157,9 +167,9 @@ export default function Home() {
                 </span>
               </h2>
               <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-                {langPreference === "en" 
-                  ? "Enter any civic query. Unlike black-box chatbots, Nagrik Mitra opens up its reasoning system, mapping rules, services, and clear action steps." 
-                  : "कोई भी सरकारी सेवा या शिकायत दर्ज करने की प्रक्रिया पूछें। सामान्य चैटबॉट्स के विपरीत, नागरिक मित्र आपको अपनी पूरी निर्णय प्रक्रिया दिखाता है।"}
+                {langPreference === "en" && "Enter any civic query. Unlike black-box chatbots, Nagrik Mitra opens up its reasoning system, mapping rules, services, and clear action steps."}
+                {langPreference === "hi" && "कोई भी सरकारी सेवा या शिकायत दर्ज करने की प्रक्रिया पूछें। सामान्य चैटबॉट्स के विपरीत, नागरिक मित्र आपको अपनी पूरी निर्णय प्रक्रिया दिखाता है।"}
+                {langPreference === "hinglish" && "Civic query type karein. Black-box chatbots ke bajaye, Nagrik Mitra aapko rules, services aur checklists ki complete reasoning step-by-step dikhata hai."}
               </p>
             </div>
 
@@ -175,7 +185,9 @@ export default function Home() {
                     placeholder={
                       langPreference === "en"
                         ? "Ask about Aadhaar correction, Ration card eligibility, link PAN..."
-                        : "पूछें: आधार कार्ड कैसे सुधारें? राशन कार्ड कैसे बनाएं?..."
+                        : langPreference === "hi"
+                        ? "पूछें: आधार कार्ड कैसे सुधारें? राशन कार्ड कैसे बनाएं?..."
+                        : "Type karein: Aadhaar card me address kaise badle? ya Ration card kaise banaye?..."
                     }
                     className="w-full bg-transparent border-none text-white placeholder-slate-400 focus:outline-none focus:ring-0 text-sm"
                   />
@@ -188,11 +200,11 @@ export default function Home() {
                   {isPending ? (
                     <>
                       <Loader2 className="h-4 w-4 animate-spin" />
-                      {langPreference === "en" ? "Reasoning..." : "सोच रहा है..."}
+                      {langPreference === "en" ? "Reasoning..." : langPreference === "hi" ? "सोच रहा है..." : "Reasoning process..."}
                     </>
                   ) : (
                     <>
-                      {langPreference === "en" ? "Consult Companion" : "सलाह लें"}
+                      {langPreference === "en" ? "Consult Companion" : langPreference === "hi" ? "सलाह लें" : "Sallah lein"}
                       <ChevronRight className="h-4 w-4" />
                     </>
                   )}
@@ -202,7 +214,7 @@ export default function Home() {
 
             {/* Suggested Queries */}
             <div className="mt-5 flex flex-wrap gap-2 items-center text-xs relative z-10">
-              <span className="text-slate-400 font-semibold">{langPreference === "en" ? "Try asking:" : "जैसे पूछें:"}</span>
+              <span className="text-slate-400 font-semibold">{langPreference === "en" ? "Try asking:" : langPreference === "hi" ? "जैसे पूछें:" : "Koshish karein:"}</span>
               {SUGGESTED_QUERIES.map((sq, idx) => (
                 <button
                   key={idx}

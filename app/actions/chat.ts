@@ -358,7 +358,7 @@ const MOCK_SCENARIOS: {
 ];
 
 // Helper to extract keywords and run mock analysis
-function runMockAnalysis(query: string, langHint: "hi" | "en" = "en"): ReasoningResult {
+function runMockAnalysis(query: string, langHint: "hi" | "en" | "hinglish" = "en"): ReasoningResult {
   const lowercaseQuery = query.toLowerCase();
   
   // Hinglish detection logic: Check for common Hindi words written in English letters (code-mixed Roman script)
@@ -450,7 +450,7 @@ function runMockAnalysis(query: string, langHint: "hi" | "en" = "en"): Reasoning
 
 export async function queryNagrikMitra(
   query: string,
-  langHint: "hi" | "en" = "en"
+  langHint: "hi" | "en" | "hinglish" = "en"
 ): Promise<ReasoningResult> {
   // Ensure query is not empty
   if (!query || query.trim() === "") {
