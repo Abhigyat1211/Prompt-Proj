@@ -20,6 +20,49 @@ const MOCK_SCENARIOS: {
   hinglish: ReasoningResult;
 }[] = [
   {
+    // New Aadhaar enrollment (including for children/minors) - distinct from correcting an EXISTING Aadhaar
+    keywords: ["__aadhaar_new_enrollment__"], // matched via intent-detection below, not plain substring
+    english: {
+      detectedLanguage: "English",
+      queryUnderstanding: "The citizen wants to enroll for a brand-new Aadhaar Card, not correct an existing one (e.g., for a child or a first-time applicant).",
+      serviceMatch: "UIDAI (Unique Identification Authority of India) - Aadhaar Seva Kendra / Enrollment Center",
+      plainExplanation: "New Aadhaar enrollment (including for children under 5, known as 'Bal Aadhaar') requires visiting an Aadhaar Seva Kendra with proof of identity/birth and is free of cost.",
+      actionSteps: [
+        "Step 1: Book an appointment at your nearest Aadhaar Seva Kendra via the UIDAI website or Aadhaar app.",
+        "Step 2: For a child under 5, carry the child's birth certificate and one parent's Aadhaar card (no biometrics needed yet).",
+        "Step 3: For a first-time adult/child over 5, carry proof of identity and proof of address documents plus Form 1.",
+        "Step 4: Complete demographic and biometric capture (if age 5+) at the center. Enrollment is free; you'll get an acknowledgment slip with an Enrolment ID (EID) to track status online."
+      ],
+      disclaimer: "Please note enrollment is subject to UIDAI verification. Check official status at uidai.gov.in using your Enrolment ID."
+    },
+    hindi: {
+      detectedLanguage: "Hindi (हिंदी)",
+      queryUnderstanding: "नागरिक नया आधार कार्ड बनवाना चाहते हैं (जैसे बच्चे के लिए), न कि किसी मौजूदा आधार में सुधार करना।",
+      serviceMatch: "यूआईडीएआई (UIDAI) - आधार सेवा केंद्र / एनरोलमेंट सेंटर",
+      plainExplanation: "नया आधार बनवाने के लिए (5 वर्ष से कम उम्र के बच्चों के लिए 'बाल आधार' सहित) नजदीकी आधार सेवा केंद्र पर जाकर पहचान/जन्म प्रमाण देना होता है और यह पूरी तरह निःशुल्क है।",
+      actionSteps: [
+        "चरण 1: UIDAI वेबसाइट या आधार ऐप से नजदीकी आधार सेवा केंद्र पर अपॉइंटमेंट बुक करें।",
+        "चरण 2: 5 वर्ष से कम उम्र के बच्चे के लिए जन्म प्रमाण पत्र और माता/पिता में से किसी एक का आधार कार्ड साथ लाएं (अभी बायोमेट्रिक्स की आवश्यकता नहीं)।",
+        "चरण 3: पहली बार आवेदन करने वाले वयस्क/5 वर्ष से बड़े बच्चे के लिए पहचान प्रमाण, पता प्रमाण और फॉर्म 1 साथ लाएं।",
+        "चरण 4: केंद्र पर डेमोग्राफिक व बायोमेट्रिक जानकारी दर्ज होगी (5+ उम्र में)। यह सेवा निःशुल्क है; आपको एनरोलमेंट आईडी (EID) मिलेगी जिससे स्थिति ट्रैक कर सकते हैं।"
+      ],
+      disclaimer: "कृपया ध्यान दें कि एनरोलमेंट UIDAI सत्यापन के अधीन है। अपनी एनरोलमेंट आईडी से uidai.gov.in पर स्थिति जांचें।"
+    },
+    hinglish: {
+      detectedLanguage: "Hinglish (हिंग्लिश)",
+      queryUnderstanding: "Citizen apne bachche ya khud ke liye naya Aadhaar card banwana chahta hai, existing Aadhaar me correction nahi.",
+      serviceMatch: "UIDAI - Aadhaar Seva Kendra / Enrollment Center",
+      plainExplanation: "Naya Aadhaar banwane ke liye (5 saal se chhote bachchon ke liye 'Bal Aadhaar' sahit) nazdeeki Aadhaar Seva Kendra par jaakar identity/birth proof dena hota hai, aur ye bilkul free hai.",
+      actionSteps: [
+        "Step 1: UIDAI website ya Aadhaar app se nazdeeki Aadhaar Seva Kendra par appointment book karein.",
+        "Step 2: 5 saal se chhote bachche ke liye birth certificate aur parent ka Aadhaar card saath le jaayein (abhi biometrics ki zaroorat nahi).",
+        "Step 3: Pehli baar apply karne wale adult/5+ umar ke bachche ke liye identity proof, address proof aur Form 1 saath le jaayein.",
+        "Step 4: Center par demographic aur biometric data liya jayega (5+ umar me). Ye service free hai; aapko Enrolment ID (EID) milegi jisse status track kar sakte hain."
+      ],
+      disclaimer: "Enrollment UIDAI ke verification ke baad hi complete hota hai. Apni Enrolment ID se uidai.gov.in par status check karein."
+    }
+  },
+  {
     keywords: ["aadhaar", "aadhar", "uidai", "आधार"],
     english: {
       detectedLanguage: "English",
@@ -378,10 +421,31 @@ function runMockAnalysis(query: string, langHint: "hi" | "en" | "hinglish" = "en
   
   const isHinglish = !isDevanagari && containsHinglishWords;
 
+  // Intent-aware routing for Aadhaar queries: "Aadhaar" alone is ambiguous between
+  // enrolling a brand-new card vs correcting an existing one. Reason about intent
+  // using surrounding words instead of matching on the word "Aadhaar" alone.
+  const AADHAAR_TERMS = ["aadhaar", "aadhar", "uidai", "आधार"];
+  const NEW_ENROLLMENT_TERMS = [
+    "new", "child", "kid", "kids", "minor", "baby", "infant", "newborn", "son", "daughter",
+    "banwana", "banwau", "banana", "banaye", "banaen", "banae", "enroll", "enrolment", "enrollment", "first time",
+    "बाल", "नया", "बनवाना", "बनाये", "बनाना", "बनाएं"
+  ];
+  const CORRECTION_TERMS = [
+    "correct", "correction", "update", "change", "fix", "wrong", "mistake", "edit",
+    "galat", "sudhar", "sudharna", "badalna", "badle",
+    "सुधार", "गलत", "बदलना", "अपडेट"
+  ];
+  const hasAadhaarTerm = AADHAAR_TERMS.some(t => lowercaseQuery.includes(t));
+  const hasNewEnrollmentTerm = NEW_ENROLLMENT_TERMS.some(t => lowercaseQuery.includes(t));
+  const hasCorrectionTerm = CORRECTION_TERMS.some(t => lowercaseQuery.includes(t));
+  const isNewAadhaarEnrollmentIntent = hasAadhaarTerm && hasNewEnrollmentTerm && !hasCorrectionTerm;
+
   // Find matching mock scenario
-  const matched = MOCK_SCENARIOS.find(s => 
-    s.keywords.some(keyword => lowercaseQuery.includes(keyword))
-  );
+  const matched = isNewAadhaarEnrollmentIntent
+    ? MOCK_SCENARIOS[0] // the dedicated new-enrollment scenario, defined first in the array
+    : MOCK_SCENARIOS.find(s =>
+        s.keywords.some(keyword => keyword !== "__aadhaar_new_enrollment__" && lowercaseQuery.includes(keyword))
+      );
 
   if (matched) {
     if (isHinglish) {
