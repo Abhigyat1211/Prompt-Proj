@@ -1,110 +1,95 @@
-# Nagrik Mitra
+# 🇮🇳 Nagrik Mitra — Smart Bharat AI Civic Companion
 
-A civic complaint tracking platform that lets citizens submit local issues (category, location, urgency, description) and follow their progress with a unique tracking ID.
+**Live demo:** [prompt-proj.vercel.app](https://prompt-proj.vercel.app)
+Built for the **PromptWars Hackathon**.
 
-**Live demo:** [prompt-proj-xwyh-1b8exrfo2-abhigyat1211s-projects.vercel.app](https://prompt-proj-xwyh-1b8exrfo2-abhigyat1211s-projects.vercel.app/)
+Nagrik Mitra ("citizen's friend") is a glass-box AI civic assistant for Indian
+citizens. Instead of hiding behind a black-box chatbot, it exposes the exact
+prompt architecture and reasoning trail behind every answer — so users (and
+reviewers) can see *why* the assistant said what it said, not just the answer
+itself.
+
+---
+
+## Why "glass-box"
+
+Most civic-service chatbots are opaque: you ask a question, you get an answer,
+and you have no way to check whether it's grounded in anything real. For a
+domain like government services — where a wrong answer can waste someone's
+entire afternoon at the wrong office — that opacity is a real cost.
+
+Nagrik Mitra takes the opposite approach: the system prompt architecture is
+shown directly in the UI, so a user (or evaluator) can inspect the same
+structure the model is reasoning from.
 
 ## Features
 
-- 📝 Submit complaints with category, location, urgency level, and description
-- 🔎 Track complaint status using a generated tracking ID
-- ⚡ Real-time backend powered by Supabase (Postgres)
-- 🎨 Smooth UI animations via Framer Motion
-- 📱 Responsive, modern interface styled with Tailwind CSS
+- **Multi-language support** — English, Hindi, and Hinglish, matched
+  automatically to the citizen's query language.
+- **Consult Companion** — ask a free-form civic question (e.g. Aadhaar
+  correction, ration card, RTI filing, pothole reporting) and get a
+  structured, step-by-step answer.
+- **Document Ready-Reckoner** — a quick checklist of documents needed for
+  common services (Aadhaar, Ration Card, PAN, Passport, Birth Certificate,
+  Income Certificate) before visiting an office.
+- **Transparent Prompt Architecture panel** — shows the actual system prompt
+  design in four layers:
+  1. Persona & tone guidelines (empathetic, neutral, language-matching)
+  2. Grounded reference data (8–12 real Indian civic services and rules)
+  3. Structured output constraint (forces a consistent JSON response:
+     language, query understanding, service match, explanation, action
+     steps, disclaimer)
+  4. Accuracy caveat — every answer includes a disclaimer to verify at the
+     official government portal before taking offline action.
 
-## Tech Stack
+## Grounded scenarios
 
-| Layer | Technology |
-|---|---|
-| Framework | [Next.js 16](https://nextjs.org) (App Router) |
-| Language | TypeScript |
-| UI | React 19, Tailwind CSS 4, Framer Motion, Lucide Icons |
-| Backend / DB | [Supabase](https://supabase.com) (Postgres + Row Level Security) |
-| Hosting | Vercel |
+New Aadhaar enrollment (incl. children), Aadhaar correction, Ration Card
+application, Birth Certificate registration, RTI filing, Pothole grievances,
+Municipal water issues, Social pensions, PAN–Aadhaar linking, Caste
+certificates, Income verification.
 
-## Project Structure
+## Tech stack
+
+- [Next.js](https://nextjs.org) (App Router) + TypeScript
+- Tailwind / PostCSS
+- LLM-backed reasoning via a structured system prompt (see `lib/`)
+- Deployed on [Vercel](https://vercel.com)
+
+## Project structure
 
 ```
-.
-├── app/            # Next.js App Router pages & routes
-├── components/     # Reusable UI components
-├── lib/            # Supabase client & shared utilities
-├── public/         # Static assets
-├── next.config.ts
-├── tsconfig.json
-└── package.json
+├── app/            # Next.js app router pages
+├── components/     # UI components (chat panel, prompt architecture viewer, document checklist)
+├── lib/            # System prompt definitions, grounded reference data, response parsing
+└── public/          # Static assets
 ```
 
-## Getting Started
-
-### 1. Clone and install
+## Running locally
 
 ```bash
 git clone https://github.com/Abhigyat1211/Prompt-Proj.git
 cd Prompt-Proj
 npm install
-```
-
-### 2. Set up environment variables
-
-Create a `.env.local` file in the project root:
-
-```bash
-NEXT_PUBLIC_SUPABASE_URL=your-supabase-project-url
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
-```
-
-You can find these in your Supabase project under **Settings → API**.
-
-### 3. Set up the database
-
-Run the following in the Supabase SQL editor to create the `complaints` table with the required Row Level Security policies:
-
-```sql
-create table complaints (
-  id uuid primary key default gen_random_uuid(),
-  tracking_id text unique not null,
-  category text,
-  location text,
-  urgency text,
-  status text default 'Submitted',
-  description text,
-  created_at timestamptz default now()
-);
-
-alter table complaints enable row level security;
-
-create policy "Allow anon insert" on complaints
-  for insert to anon with check (true);
-
-create policy "Allow anon select" on complaints
-  for select to anon using (true);
-```
-
-### 4. Run the dev server
-
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+Open [http://localhost:3000](http://localhost:3000).
 
-## Deployment
+You'll need to add an API key for your LLM provider — see `.env.example`
+*(add this file if it doesn't exist yet — see improvements below)*.
 
-This project is deployed on [Vercel](https://vercel.com). To deploy your own instance:
+## Known limitations / what I'd do next
 
-1. Push this repo to your GitHub account
-2. Import it into Vercel
-3. Add the `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` environment variables under **Project Settings → Environment Variables**
-4. Deploy — Vercel will build and host it automatically
+- Add automated eval cases for the grounded scenarios (right now correctness
+  relies on the system prompt being followed, with no test harness).
+- Add a `.env.example` so others can run this without guessing which env vars
+  are required.
+- Expand grounded reference data beyond the initial 8–12 services.
+- Add citations/links to the actual official portal for each service inside
+  the response itself, not just a generic disclaimer.
 
-## Roadmap / Ideas
+---
 
-- [ ] Admin dashboard for managing complaint statuses
-- [ ] Email/SMS notifications on status updates
-- [ ] Map view of complaint locations
-- [ ] Authentication for municipal staff
-
-## License
-
-Add a license of your choice (e.g. MIT) if you plan to open-source this.
+*This README replaces the default `create-next-app` boilerplate that was
+here before — see git history if you want the original scaffold text.*
